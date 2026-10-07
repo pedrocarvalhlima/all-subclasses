@@ -219,51 +219,59 @@ document.addEventListener("DOMContentLoaded", function() {
 		
 		isTransitioning = true;
 		
-		// Get current item before clearing
 		const currentItem = classViewer.querySelector('.class-item.active');
+		const existingPreviews = classViewer.querySelectorAll('.preview-item');
 		
-		// Add slide-out class to current item if it exists
-		if (currentItem) {
-			currentItem.classList.add(`slide-${direction === 'right' ? 'left' : 'right'}`);
-			currentItem.classList.remove('active');
-			
-			// Delay removing current item to allow for animation
-			const removeCurrentItem = setTimeout(() => {
-				currentItem.remove();
-			}, 500); // Slightly longer to ensure smooth transition
-			pendingCleanup.push(removeCurrentItem);
-		}
-		
-		// Add previews
+		// Calculate indices
 		const prevIndex = (index - 1 + classes.length) % classes.length;
 		const nextIndex = (index + 1) % classes.length;
 		
-		// Clear any existing preview items
-		const existingPreviews = classViewer.querySelectorAll('.preview-item');
-		existingPreviews.forEach(preview => preview.remove());
+		// Remove existing previews with animation
+		existingPreviews.forEach(preview => {
+			if (direction === 'right' && preview.classList.contains('left')) {
+				preview.classList.add('slide-to-main');
+			} else if (direction === 'left' && preview.classList.contains('right')) {
+				preview.classList.add('slide-to-main');
+			} else {
+				preview.classList.add('slide-from-main');
+			}
+			
+			setTimeout(() => preview.remove(), 700);
+		});
 		
-		classViewer.appendChild(createPreviewItem(classes[prevIndex], 'left'));
-		classViewer.appendChild(createPreviewItem(classes[nextIndex], 'right'));
+		// Handle current item animation
+		if (currentItem) {
+			currentItem.classList.add(`slide-${direction === 'right' ? 'left' : 'right'}`);
+			currentItem.classList.remove('active');
+			setTimeout(() => currentItem.remove(), 700);
+		}
 		
-		// Create new item but don't make it active right away
+		// Create and add new previews
+		const leftPreview = createPreviewItem(classes[prevIndex], 'left');
+		const rightPreview = createPreviewItem(classes[nextIndex], 'right');
+		
+		// Create new main item
 		const newItem = createClassItem(classes[index], false);
 		newItem.classList.add(`slide-${direction}`);
+		
+		// Add all elements to DOM
+		classViewer.appendChild(leftPreview);
+		classViewer.appendChild(rightPreview);
 		classViewer.appendChild(newItem);
 		
-		// Force reflow before starting animation
+		// Force reflow
 		newItem.offsetHeight;
 		
-		// Use requestAnimationFrame for smoother transition timing
+		// Trigger animations
 		requestAnimationFrame(() => {
-			requestAnimationFrame(() => {
-				newItem.classList.remove(`slide-${direction}`);
-				newItem.classList.add('active');
-			});
+			newItem.classList.remove(`slide-${direction}`);
+			newItem.classList.add('active');
 		});
 		
 		const transitionEnd = setTimeout(() => {
 			isTransitioning = false;
-		}, 800);
+		}, 700);
+		
 		pendingCleanup.push(transitionEnd);
 	}
 

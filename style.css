@@ -3,6 +3,7 @@
 html {
     height: 100%;
     background-color: #111;
+    overflow: hidden; /* Prevent scrollbars */
 }
 
 body {
@@ -11,8 +12,9 @@ body {
     color: #f0e6d2;
     font-family: 'Spectral', serif;
     margin: 0;
-    min-height: 100vh;
+    height: 100vh; /* Use vh instead of min-height */
     padding: 0;
+    overflow: hidden; /* Prevent scrollbars */
 }
 
 h1 {
@@ -29,14 +31,14 @@ h1 {
 /* Main window title */
 .main-title {
     position: absolute;
-    top: 20px;
+    top: 10px; /* Reduce top spacing */
     left: 0;
     right: 0;
     text-align: center;
     color: #c8aa6e;
-    font-size: 1.8em; /* Reduced from 2.5em */
+    font-size: 1.5em; /* Further reduced size */
     margin: 0;
-    padding: 15px 0; /* Reduced padding */
+    padding: 10px 0; /* Reduced padding */
     text-transform: uppercase;
     letter-spacing: 4px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -52,18 +54,20 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 50px; /* Reduced from 60px */
+    padding-top: 40px; /* Reduced from 50px */
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
 /* Class viewer for displaying classes */
 .class-viewer {
     position: relative;
     width: 100%;
-    height: 90vh;
+    height: 85vh; /* Reduced from 90vh */
     display: flex;
     justify-content: center;
     align-items: center;
     perspective: 1000px;
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
 /* Individual class item in the viewer */
@@ -72,34 +76,29 @@ h1 {
     width: auto;
     height: 90%;
     opacity: 0;
-    /* Use same timing function for all transitions */
-    transition: transform 0.7s cubic-bezier(0.2, 0.1, 0.3, 1), 
-                opacity 0.7s cubic-bezier(0.2, 0.1, 0.3, 1);
+    transform: translateX(100px) scale(0.85);
+    transition: all 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
     pointer-events: none;
-    transform: translateX(100px);
     will-change: transform, opacity;
+    z-index: 5;
+    transform-origin: center center;
 }
 
 .class-item.active {
     opacity: 1;
     pointer-events: all;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
+    z-index: 10;
 }
 
 .class-item.slide-left {
-    transform: translateX(-100px);
+    transform: translateX(-100px) scale(0.85);
     opacity: 0;
-    /* Keep identical transition timing to avoid jumps */
-    transition: transform 0.7s cubic-bezier(0.2, 0.1, 0.3, 1), 
-                opacity 0.7s cubic-bezier(0.2, 0.1, 0.3, 1);
 }
 
 .class-item.slide-right {
-    transform: translateX(100px);
+    transform: translateX(100px) scale(0.85);
     opacity: 0;
-    /* Keep identical transition timing to avoid jumps */
-    transition: transform 0.7s cubic-bezier(0.2, 0.1, 0.3, 1), 
-                opacity 0.7s cubic-bezier(0.2, 0.1, 0.3, 1);
 }
 
 /* Preview images style */
@@ -109,18 +108,20 @@ h1 {
     opacity: 0.3;
     filter: blur(2px) brightness(0.5);
     pointer-events: none;
-    transition: all 0.8s cubic-bezier(0.42, 0, 0.58, 1);
-    will-change: transform, opacity;
+    transition: all 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+    will-change: transform, opacity, filter;
+    z-index: 1;
+    transform-origin: center center;
 }
 
 .preview-item.left {
-    left: 50px;
-    transform: translateX(-100%) scale(0.8);
+    left: calc(50% - 25vw);
+    transform: translateX(-50%) scale(0.85);
 }
 
 .preview-item.right {
-    right: 50px;
-    transform: translateX(100%) scale(0.8);
+    right: calc(50% - 25vw);
+    transform: translateX(50%) scale(0.85);
 }
 
 /* Image style for class images in viewer */
@@ -276,7 +277,9 @@ h1 {
     opacity: 0;
     transition: opacity 0.3s ease, visibility 0.3s ease;
     pointer-events: none;
-    padding-top: 50px; /* Reduced from 60px */
+    padding-top: 40px; /* Reduced from 50px */
+    box-sizing: border-box; /* Include padding in height calculation */
+    overflow: hidden; /* Prevent scrollbars */
 }
 
 .subclass-container.active {
@@ -300,19 +303,19 @@ h1 {
 /* Subclass window title */
 .subclass-title {
     position: absolute;
-    top: 20px;
+    top: 10px; /* Reduced from 20px */
     left: 0;
     right: 0;
     text-align: center;
     color: #c8aa6e;
-    font-size: 1.2em; /* Reduced from 2.5em */
+    font-size: 1.2em;
     margin: 0;
-    padding: 15px 0; /* Reduced padding */
+    padding: 10px 0; /* Reduced padding */
     text-transform: uppercase;
     letter-spacing: 4px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     font-weight: 400;
-    z-index: 1010; /* Higher than container but lower than close button */
+    z-index: 1010;
 }
 
 /* Subclass viewer for displaying subclasses */
@@ -321,9 +324,10 @@ h1 {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 90vh;
-    position: relative; /* Add positioning context */
-    perspective: 1000px; /* Match class viewer perspective */
+    height: 85vh; /* Reduced from 90vh */
+    position: relative;
+    perspective: 1000px;
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
 .subclass-viewer .class-item {
@@ -341,15 +345,17 @@ h1 {
     right: 0;
     margin: 0 auto;
     width: auto;
-    height: 90%;
+    height: 85%; 
+    max-height: 85vh;
 }
 
 .subclass-viewer .class-item img {
-    height: 100%;
+    height: auto; /* Changed from percentage to auto */
     width: auto;
-    max-height: 90vh;
+    max-height: 85vh;
+    max-width: 95vw;
     object-fit: contain;
-    transition: transform 0.3s ease; /* Add transition for smooth offset changes */
+    transition: transform 0.3s ease;
 }
 
 .subclass-viewer .class-item.active {
@@ -375,7 +381,10 @@ h1 {
 /* New image container style in subclass viewer */
 .subclass-viewer .image-container {
     position: relative;
-    height: 100%;
+    height: auto; /* Changed from 100% to auto */
+    max-height: 85vh;
+    width: auto;
+    max-width: 95vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -394,18 +403,17 @@ h1 {
     width: 100%;
     margin: 0;
     color: #f0e6d2;
-    padding: 15px 15px 15px;
+    padding: 12px 15px; /* Slightly reduced padding */
     text-align: center;
     font-size: 1.1em;
     text-transform: uppercase;
     letter-spacing: 2px;
     opacity: 0;
-    transition: opacity 0.4s ease, transform 0.3s ease; /* Add transition for caption adjustments */
-    /* border-left: 1px solid rgba(200, 170, 110, 0.3); */
-    /* border-right: 1px solid rgba(200, 170, 110, 0.3); */
+    transition: opacity 0.4s ease, transform 0.3s ease;
     border-bottom: 1px solid rgba(200, 170, 110, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box; /* Include padding in height calculation */
 }
 
 /* Fix hover effect for image container in subclass view */
@@ -441,13 +449,13 @@ img.center-adjust {
 */
 
 /* Add transition properties to ensure smooth centering adjustments */
-.subclass-viewer .class-item img {
+/* .subclass-viewer .class-item img {
     height: 100%;
     width: auto;
-    max-height: 90vh;
+    max-height: 85vh;
     object-fit: contain;
-    transition: transform 0.3s ease; /* Add transition for smooth offset changes */
-}
+    transition: transform 0.3s ease; /* Add transition for smooth offset changes 
+} */
 
 /* Ensure captions can be positioned individually when needed */
 .subclass-viewer .class-caption {
